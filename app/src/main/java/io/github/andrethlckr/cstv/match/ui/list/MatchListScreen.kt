@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun MatchListDestination() {
+fun MatchListDestination(
+    viewModel: MatchListViewModel
+) {
     MatchListScreen()
 }
 
