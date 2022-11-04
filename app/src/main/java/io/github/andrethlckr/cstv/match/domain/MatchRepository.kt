@@ -4,5 +4,5 @@ import io.github.andrethlckr.cstv.core.data.NetworkResult
 
 interface MatchRepository {
 
-    fun getMatches(): NetworkResult<List<Match>>
+    suspend fun getMatches(): NetworkResult<List<Match>>
 }

@@ -7,5 +7,5 @@ import javax.inject.Inject
 
 class MatchRepositoryImpl @Inject constructor(): MatchRepository {
 
-    override fun getMatches(): NetworkResult<List<Match>> = NetworkResult.Success(emptyList())
+    override suspend fun getMatches(): NetworkResult<List<Match>> = NetworkResult.Success(emptyList())
 }
