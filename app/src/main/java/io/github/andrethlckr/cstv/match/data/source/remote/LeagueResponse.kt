@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LeagueResponse(
     @SerialName("id")
-    val id: Int = 0,
+    val id: Long = 0,
     @SerialName("name")
     val name: String = "",
     @SerialName("image_url")

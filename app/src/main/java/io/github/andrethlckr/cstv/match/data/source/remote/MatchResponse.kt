@@ -6,13 +6,13 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class MatchResponse(
     @SerialName("id")
-    val id: Int = 0,
+    val id: Long = 0,
     @SerialName("name")
     val name: String = "",
     @SerialName("status")
     val status: String = "",
-    @SerialName("begin_at")
-    val beginAt: String? = null,
+    @SerialName("scheduled_at")
+    val scheduledAt: String? = null,
     @SerialName("opponents")
     val opponents: List<OpponentResponse> = emptyList(),
     @SerialName("league")

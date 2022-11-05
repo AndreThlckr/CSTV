@@ -2,11 +2,16 @@ package io.github.andrethlckr.cstv.match.domain
 
 import java.time.ZonedDateTime
 
+@JvmInline
+value class MatchId(
+    val value: Long
+)
+
 data class Match(
-    val id: Int,
+    val id: MatchId,
     val name: String,
     val status: MatchStatus,
-    val beginAt: ZonedDateTime,
+    val scheduledAt: ZonedDateTime?,
     val opponents: List<Opponent>,
     val league: League,
     val series: Series

@@ -6,9 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SeriesResponse(
     @SerialName("id")
-    val id: Int = 0,
-    @SerialName("name")
-    val name: String = "",
+    val id: Long = 0,
     @SerialName("full_name")
     val fullName: String = "",
 )

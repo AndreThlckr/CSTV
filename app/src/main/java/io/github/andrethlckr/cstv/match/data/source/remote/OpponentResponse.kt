@@ -12,9 +12,9 @@ data class OpponentResponse(
 @Serializable
 data class OpponentDetailsResponse(
     @SerialName("id")
-    val id: Int = 0,
+    val id: Long = 0,
+    @SerialName("name")
+    val name: String = "",
     @SerialName("image_url")
     val imageUrl: String? = null,
-    @SerialName("name")
-    val name: String? = null,
 )

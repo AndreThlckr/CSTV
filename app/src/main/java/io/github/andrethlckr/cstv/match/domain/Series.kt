@@ -1,9 +1,11 @@
 package io.github.andrethlckr.cstv.match.domain
 
-import io.github.andrethlckr.cstv.core.domain.ImageUrl
+@JvmInline
+value class SeriesId(
+    val value: Long
+)
 
 data class Series(
-    val id: Int,
-    val name: String,
-    val image: ImageUrl?
+    val id: SeriesId,
+    val name: String
 )
