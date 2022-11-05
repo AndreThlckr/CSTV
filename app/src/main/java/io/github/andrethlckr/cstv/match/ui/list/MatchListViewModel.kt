@@ -9,6 +9,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MatchListViewModel @Inject constructor() : ViewModel() {
 
-    private val _state = MutableStateFlow("")
+    private val _state = MutableStateFlow(
+        MatchListState(
+            isLoading = true,
+            matches = emptyList()
+        )
+    )
     val state = _state.asStateFlow()
 }
