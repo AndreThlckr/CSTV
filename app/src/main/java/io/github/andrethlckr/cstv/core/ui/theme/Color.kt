@@ -2,7 +2,8 @@ package io.github.andrethlckr.cstv.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val EerieBlack = Color(0xFF161621)
+val YankeesBlue = Color(0xFF272639)
+val ImperialRed = Color(0xFFF42A35)
+val SilverSand = Color(0xFFC4C4C4)
+val OldLavender = Color(0xFF6C6B7E)
