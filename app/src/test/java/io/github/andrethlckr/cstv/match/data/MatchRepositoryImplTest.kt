@@ -1,5 +1,6 @@
 package io.github.andrethlckr.cstv.match.data
 
+import io.github.andrethlckr.cstv.core.data.NetworkResult
 import io.github.andrethlckr.cstv.core.data.dataOrNull
 import io.github.andrethlckr.cstv.core.domain.ImageUrl
 import io.github.andrethlckr.cstv.match.data.source.remote.LeagueResponse
@@ -7,6 +8,7 @@ import io.github.andrethlckr.cstv.match.data.source.remote.MatchResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.OpponentDetailsResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.OpponentResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.SeriesResponse
+import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchesService
 import io.github.andrethlckr.cstv.match.domain.League
 import io.github.andrethlckr.cstv.match.domain.LeagueId
 import io.github.andrethlckr.cstv.match.domain.MatchId
@@ -16,9 +18,10 @@ import io.github.andrethlckr.cstv.match.domain.Opponent
 import io.github.andrethlckr.cstv.match.domain.OpponentId
 import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
-import io.github.andrethlckr.fake.cstv.match.data.source.remote.service.FakeGetMatchesService
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -28,7 +31,7 @@ import java.time.ZonedDateTime
 @OptIn(ExperimentalCoroutinesApi::class)
 class MatchRepositoryImplTest {
 
-    private val getMatchesService = FakeGetMatchesService()
+    private val getMatchesService: GetMatchesService = mockk()
 
     private val repository: MatchRepository = MatchRepositoryImpl(
         getMatchesService = getMatchesService
@@ -36,7 +39,8 @@ class MatchRepositoryImplTest {
 
     @Test
     fun `getMatches should return list of matches`() = runTest {
-        getMatchesService.response = listOf(MatchResponse())
+        coEvery { getMatchesService.fetchUpcomingMatches() }
+            .returns(NetworkResult.Success(listOf(MatchResponse())))
 
         val matches = repository.getMatches().dataOrNull()
 
@@ -45,10 +49,12 @@ class MatchRepositoryImplTest {
 
     @Test
     fun `getMatches should return matches with correct name and id`() = runTest {
-        getMatchesService.response = listOf(
-            MatchResponse(
-                id = 5,
-                name = "Epic match"
+        coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
+            listOf(
+                MatchResponse(
+                    id = 5,
+                    name = "Epic match"
+                )
             )
         )
 
@@ -60,11 +66,13 @@ class MatchRepositoryImplTest {
 
     @Test
     fun `getMatches should return matches with correct status`() = runTest {
-        getMatchesService.response = listOf(
-            MatchResponse(status = "not_started"),
-            MatchResponse(status = "finished"),
-            MatchResponse(status = "random"),
-            MatchResponse(status = "running")
+        coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
+            listOf(
+                MatchResponse(status = "not_started"),
+                MatchResponse(status = "finished"),
+                MatchResponse(status = "random"),
+                MatchResponse(status = "running")
+            )
         )
 
         val matchStatuses = repository.getMatches().dataOrNull()!!.map { it.status }
@@ -79,9 +87,11 @@ class MatchRepositoryImplTest {
 
     @Test
     fun `getMatches should return matches with correct schedule`() = runTest {
-        getMatchesService.response = listOf(
-            MatchResponse(scheduledAt = "2022-10-20T18:15:00Z"),
-            MatchResponse(scheduledAt = null)
+        coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
+            listOf(
+                MatchResponse(scheduledAt = "2022-10-20T18:15:00Z"),
+                MatchResponse(scheduledAt = null)
+            )
         )
 
         val schedules = repository.getMatches().dataOrNull()!!.map { it.scheduledAt }
@@ -94,21 +104,23 @@ class MatchRepositoryImplTest {
 
     @Test
     fun `getMatches should return matches with correct opponents`() = runTest {
-        getMatchesService.response = listOf(
-            MatchResponse(
-                opponents = listOf(
-                    OpponentResponse(
-                        opponent = OpponentDetailsResponse(
-                            id = 3,
-                            name = "Red Team",
-                            imageUrl = "www.red-team.com/pic"
-                        )
-                    ),
-                    OpponentResponse(
-                        opponent = OpponentDetailsResponse(
-                            id = 7,
-                            name = "Blue Team",
-                            imageUrl = null
+        coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
+            listOf(
+                MatchResponse(
+                    opponents = listOf(
+                        OpponentResponse(
+                            opponent = OpponentDetailsResponse(
+                                id = 3,
+                                name = "Red Team",
+                                imageUrl = "www.red-team.com/pic"
+                            )
+                        ),
+                        OpponentResponse(
+                            opponent = OpponentDetailsResponse(
+                                id = 7,
+                                name = "Blue Team",
+                                imageUrl = null
+                            )
                         )
                     )
                 )
@@ -133,9 +145,11 @@ class MatchRepositoryImplTest {
 
     @Test
     fun `getMatches should return matches with default opponent if list is empty`() = runTest {
-        getMatchesService.response = listOf(
-            MatchResponse(
-                opponents = emptyList()
+        coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
+            listOf(
+                MatchResponse(
+                    opponents = emptyList()
+                )
             )
         )
 
@@ -157,12 +171,14 @@ class MatchRepositoryImplTest {
 
     @Test
     fun `getMatches should return matches with correct league`() = runTest {
-        getMatchesService.response = listOf(
-            MatchResponse(
-                league = LeagueResponse(
-                    id = 4,
-                    name = "Pro League",
-                    imageUrl = "www.pro-league.com/pic"
+        coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
+            listOf(
+                MatchResponse(
+                    league = LeagueResponse(
+                        id = 4,
+                        name = "Pro League",
+                        imageUrl = "www.pro-league.com/pic"
+                    )
                 )
             )
         )
@@ -178,11 +194,13 @@ class MatchRepositoryImplTest {
 
     @Test
     fun `getMatches should return matches with correct series`() = runTest {
-        getMatchesService.response = listOf(
-            MatchResponse(
-                series = SeriesResponse(
-                    id = 4,
-                    fullName = "Spring 2022",
+        coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
+            listOf(
+                MatchResponse(
+                    series = SeriesResponse(
+                        id = 4,
+                        fullName = "Spring 2022",
+                    )
                 )
             )
         )
