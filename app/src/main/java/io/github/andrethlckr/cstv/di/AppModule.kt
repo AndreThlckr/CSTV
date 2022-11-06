@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.github.andrethlckr.cstv.core.data.NetworkResultCallAdapterFactory
 import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchesService
+import io.github.andrethlckr.cstv.match.data.source.remote.service.PandaScoreTokenInterceptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
@@ -22,6 +23,7 @@ object AppModule {
     @Provides
     fun provideOkHttpClient() = OkHttpClient
         .Builder()
+        .addInterceptor(PandaScoreTokenInterceptor())
         .build()
 
     @OptIn(ExperimentalSerializationApi::class)
