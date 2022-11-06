@@ -33,12 +33,10 @@ class NetworkResultCall<R>(
             }
 
             override fun onFailure(call: Call<R>, throwable: Throwable) {
-                val failure = when (throwable) {
-                    is HttpException ->  NetworkResult.Failure
-                    else -> NetworkResult.Failure
-                }
-
-                callback.onResponse(this@NetworkResultCall, Response.success(failure))
+                callback.onResponse(
+                    this@NetworkResultCall,
+                    Response.success(NetworkResult.Failure)
+                )
             }
         }
     )

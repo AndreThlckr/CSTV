@@ -1,16 +1,19 @@
 package io.github.andrethlckr.cstv.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.github.andrethlckr.cstv.core.data.NetworkResultCallAdapterFactory
+import io.github.andrethlckr.cstv.match.data.MatchRepositoryImpl
 import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchesService
 import io.github.andrethlckr.cstv.match.data.source.remote.service.PandaScoreTokenInterceptor
 import kotlinx.serialization.ExperimentalSerializationApi
+import io.github.andrethlckr.cstv.match.domain.MatchRepository
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -32,7 +35,7 @@ object AppModule {
     fun provideRetrofit(
         okHttpClient: OkHttpClient
     ): Retrofit {
-        val converterFactory = Json.asConverterFactory(MediaType.get("application/json"))
+        val converterFactory = jsonConfiguration.asConverterFactory("application/json".toMediaType())
 
         return Retrofit.Builder()
             .client(okHttpClient)
@@ -44,5 +47,19 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGetMatchesService(retrofit: Retrofit) = retrofit.create(GetMatchesService::class.java)
+    fun provideGetMatchesService(retrofit: Retrofit): GetMatchesService = retrofit.create(GetMatchesService::class.java)
+}
+
+private val jsonConfiguration = Json {
+    ignoreUnknownKeys = true
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+
+    @Binds
+    abstract fun bindMatchRepository(
+        matchRepositoryImpl: MatchRepositoryImpl
+    ): MatchRepository
 }

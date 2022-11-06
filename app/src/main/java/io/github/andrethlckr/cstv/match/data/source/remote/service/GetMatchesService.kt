@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 interface GetMatchesService {
 
-    @GET("/csgo/matches/upcoming")
+    @GET("/csgo/matches/upcoming?sort=begin_at&sort=scheduled_at")
     suspend fun fetchUpcomingMatches(): NetworkResult<List<MatchResponse>>
 }
