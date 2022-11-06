@@ -1,5 +1,11 @@
 package io.github.andrethlckr.cstv.match.ui.list
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,6 +53,7 @@ fun MatchListDestination(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MatchListScreen(
     isLoading: Boolean,
@@ -58,38 +65,38 @@ fun MatchListScreen(
             .background(MaterialTheme.colors.background)
             .padding(horizontal = 24.dp)
     ) {
-        if (isLoading) {
-            item(
-                contentType = { "loading" }
-            ) {
-                LoadingIndicator(
-                    modifier = Modifier.fillParentMaxSize()
-                )
-            }
-        } else {
-            item(
-                contentType = { "title" }
-            ) {
-                Text(
-                    text = stringResource(R.string.matches),
-                    style = MaterialTheme.typography.h2,
-                    color = contentColorFor(MaterialTheme.colors.background),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 24.dp)
-                )
-            }
+        item(
+            contentType = { "title" }
+        ) {
+            Text(
+                text = stringResource(R.string.matches),
+                style = MaterialTheme.typography.h2,
+                color = contentColorFor(MaterialTheme.colors.background),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp)
+            )
+        }
 
+        if (!isLoading) {
             items(
                 items = matches,
                 key = { it.id.value }
             ) {
                 MatchCard(
                     match = it,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    modifier = Modifier
+                        .padding(bottom = 24.dp)
+                        .animateItemPlacement()
                 )
             }
         }
+    }
+
+    if (isLoading) {
+        LoadingIndicator(
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
