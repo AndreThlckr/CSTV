@@ -117,7 +117,7 @@ class MatchRepositoryImplTest {
 
         val opponents = repository.getMatches().dataOrNull()!!.first().opponents
 
-        opponents shouldBe listOf(
+        opponents shouldBe Pair(
             Opponent(
                 id = OpponentId(3),
                 name = "Red Team",
@@ -126,6 +126,30 @@ class MatchRepositoryImplTest {
             Opponent(
                 id = OpponentId(7),
                 name = "Blue Team",
+                image = null
+            )
+        )
+    }
+
+    @Test
+    fun `getMatches should return matches with default opponent if list is empty`() = runTest {
+        getMatchesService.response = listOf(
+            MatchResponse(
+                opponents = emptyList()
+            )
+        )
+
+        val opponents = repository.getMatches().dataOrNull()!!.first().opponents
+
+        opponents shouldBe Pair(
+            Opponent(
+                id = OpponentId(0),
+                name = "",
+                image = null
+            ),
+            Opponent(
+                id = OpponentId(0),
+                name = "",
                 image = null
             )
         )

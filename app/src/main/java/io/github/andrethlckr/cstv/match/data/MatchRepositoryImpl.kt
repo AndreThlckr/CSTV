@@ -34,7 +34,7 @@ class MatchRepositoryImpl @Inject constructor(
         name = response.name,
         status = statusFrom(response.status),
         scheduledAt = timeFrom(response.scheduledAt),
-        opponents = response.opponents.map { opponentFrom(it) },
+        opponents = opponentsFrom(response.opponents),
         league = leagueFrom(response.league),
         series = seriesFrom(response.series)
     )
@@ -48,11 +48,24 @@ class MatchRepositoryImpl @Inject constructor(
 
     private fun timeFrom(text: String?) = text?.let { ZonedDateTime.parse(it) }
 
-    private fun opponentFrom(response: OpponentResponse) = Opponent(
-        id = OpponentId(response.opponent.id),
-        name = response.opponent.name,
-        image = ImageUrl.from(response.opponent.imageUrl)
+    private fun opponentsFrom(list: List<OpponentResponse>) = Pair(
+        first = opponentFrom(list.getOrNull(0)),
+        second = opponentFrom(list.getOrNull(1))
     )
+
+    private fun opponentFrom(response: OpponentResponse?) = if (response != null) {
+        Opponent(
+            id = OpponentId(response.opponent.id),
+            name = response.opponent.name,
+            image = ImageUrl.from(response.opponent.imageUrl)
+        )
+    } else {
+        Opponent(
+            id = OpponentId(0),
+            name = "",
+            image = null
+        )
+    }
 
     private fun leagueFrom(response: LeagueResponse) = League(
         id = LeagueId(response.id),
