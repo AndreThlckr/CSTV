@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CSTV</string>
+    <string name="today">Hoje</string>
     <string name="matches">Partidas</string>
 </resources>
