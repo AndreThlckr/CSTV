@@ -2,4 +2,8 @@
     <string name="app_name">CSTV</string>
     <string name="today">Hoje</string>
     <string name="matches">Partidas</string>
+    <string name="team_emblem_description">Emblema do time</string>
+    <string name="versus">vs</string>
+    <string name="live">Agora</string>
+    <string name="league_emblem_description">Logo da liga</string>
 </resources>

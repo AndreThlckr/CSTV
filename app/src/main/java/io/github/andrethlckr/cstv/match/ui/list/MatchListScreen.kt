@@ -52,32 +52,12 @@ fun MatchListScreen(
     isLoading: Boolean,
     matches: List<Match>
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
-            .padding(24.dp)
+            .padding(horizontal = 24.dp)
     ) {
-        Text(
-            text = stringResource(R.string.matches),
-            style = MaterialTheme.typography.h2,
-            color = contentColorFor(MaterialTheme.colors.background),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        MatchesList(
-            isLoading = isLoading,
-            matches = matches
-        )
-    }
-}
-
-@Composable
-fun MatchesList(
-    isLoading: Boolean,
-    matches: List<Match>
-) {
-    LazyColumn {
         if (isLoading) {
             item(
                 contentType = { "loading" }
@@ -87,16 +67,31 @@ fun MatchesList(
                 )
             }
         } else {
+            item(
+                contentType = { "title" }
+            ) {
+                Text(
+                    text = stringResource(R.string.matches),
+                    style = MaterialTheme.typography.h2,
+                    color = contentColorFor(MaterialTheme.colors.background),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 24.dp)
+                )
+            }
+
             items(
                 items = matches,
                 key = { it.id.value }
             ) {
-                MatchCard(it)
+                MatchCard(
+                    match = it,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
             }
         }
     }
 }
-
 
 
 @Composable
@@ -131,13 +126,13 @@ fun MatchListScreenPreview() {
     CSTVTheme {
         MatchListScreen(
             isLoading = false,
-            matches = listOf(
+            matches = MutableList(3) { index ->
                 Match(
-                    id = MatchId(1),
+                    id = MatchId(index.toLong()),
                     name = "Match name",
                     status = MatchStatus.NotStarted,
                     scheduledAt = ZonedDateTime.now(),
-                    opponents = listOf(
+                    opponents = Pair(
                         Opponent(
                             id = OpponentId(2),
                             name = "First",
@@ -159,7 +154,7 @@ fun MatchListScreenPreview() {
                         name = "Series"
                     ),
                 )
-            )
+            }
         )
     }
 }
