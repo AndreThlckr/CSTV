@@ -53,17 +53,11 @@ class MatchRepositoryImpl @Inject constructor(
         second = opponentFrom(list.getOrNull(1))
     )
 
-    private fun opponentFrom(response: OpponentResponse?) = if (response != null) {
+    private fun opponentFrom(response: OpponentResponse?) = response?.let {
         Opponent(
             id = OpponentId(response.opponent.id),
             name = response.opponent.name,
             image = ImageUrl.from(response.opponent.imageUrl)
-        )
-    } else {
-        Opponent(
-            id = OpponentId(0),
-            name = "",
-            image = null
         )
     }
 

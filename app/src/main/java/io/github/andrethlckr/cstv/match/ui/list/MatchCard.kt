@@ -137,8 +137,8 @@ fun ScheduleIndicator(
 
 @Composable
 fun DisputeRow(
-    first: Opponent,
-    second: Opponent,
+    first: Opponent?,
+    second: Opponent?,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -161,14 +161,14 @@ fun DisputeRow(
 
 @Composable
 fun TeamEmblem(
-    opponent: Opponent
+    opponent: Opponent?
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(opponent.image?.url)
+                .data(opponent?.image?.url)
                 .crossfade(true)
                 .build(),
             placeholder = painterResource(R.drawable.circle_placeholder),
@@ -181,7 +181,7 @@ fun TeamEmblem(
         )
 
         Text(
-            text = opponent.name,
+            text = opponent?.name.orEmpty(),
             color = MaterialTheme.colors.onSurface,
             style = MaterialTheme.typography.body2,
             modifier = Modifier.padding(top = 10.dp)
@@ -307,11 +307,7 @@ fun DisputeRowPreview() {
                 name = "First",
                 image = null
             ),
-            second = Opponent(
-                id = OpponentId(3),
-                name = "Second",
-                image = null
-            )
+            second = null
         )
     }
 }

@@ -155,18 +155,7 @@ class MatchRepositoryImplTest {
 
         val opponents = repository.getMatches().dataOrNull()!!.first().opponents
 
-        opponents shouldBe Pair(
-            Opponent(
-                id = OpponentId(0),
-                name = "",
-                image = null
-            ),
-            Opponent(
-                id = OpponentId(0),
-                name = "",
-                image = null
-            )
-        )
+        opponents shouldBe Pair(null, null)
     }
 
     @Test
