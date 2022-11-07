@@ -3,6 +3,11 @@ package io.github.andrethlckr.cstv.match.data.source.remote
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
+/**
+ * Represents a CS:GO match from PandaScore API.
+ *
+ * The field [players] is only available when searching the match by id.
+ */
 @Serializable
 data class MatchResponse(
     @SerialName("id")
@@ -19,4 +24,6 @@ data class MatchResponse(
     val league: LeagueResponse = LeagueResponse(),
     @SerialName("serie")
     val series: SeriesResponse = SeriesResponse(),
+    @SerialName("players")
+    val players: List<PlayerResponse> = emptyList(),
 )
