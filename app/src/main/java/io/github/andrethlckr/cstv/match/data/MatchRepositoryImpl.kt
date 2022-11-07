@@ -55,9 +55,9 @@ class MatchRepositoryImpl @Inject constructor(
 
     private fun opponentFrom(response: OpponentResponse?) = response?.let {
         Team(
-            id = TeamId(response.opponent.id),
-            name = response.opponent.name,
-            image = ImageUrl.from(response.opponent.imageUrl)
+            id = TeamId(response.team.id),
+            name = response.team.name,
+            image = ImageUrl.from(response.team.imageUrl)
         )
     }
 

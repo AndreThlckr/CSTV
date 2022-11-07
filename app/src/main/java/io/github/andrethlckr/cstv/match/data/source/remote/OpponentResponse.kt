@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OpponentResponse(
     @SerialName("opponent")
-    val opponent: OpponentDetailsResponse = OpponentDetailsResponse(),
+    val team: TeamResponse = TeamResponse(),
 )
 
 @Serializable
-data class OpponentDetailsResponse(
+data class TeamResponse(
     @SerialName("id")
     val id: Long = 0,
     @SerialName("name")

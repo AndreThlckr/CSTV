@@ -5,7 +5,7 @@ import io.github.andrethlckr.cstv.core.data.dataOrNull
 import io.github.andrethlckr.cstv.core.domain.ImageUrl
 import io.github.andrethlckr.cstv.match.data.source.remote.LeagueResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.MatchResponse
-import io.github.andrethlckr.cstv.match.data.source.remote.OpponentDetailsResponse
+import io.github.andrethlckr.cstv.match.data.source.remote.TeamResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.OpponentResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.SeriesResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchesService
@@ -109,14 +109,14 @@ class MatchRepositoryImplTest {
                 MatchResponse(
                     opponents = listOf(
                         OpponentResponse(
-                            opponent = OpponentDetailsResponse(
+                            team = TeamResponse(
                                 id = 3,
                                 name = "Red Team",
                                 imageUrl = "www.red-team.com/pic"
                             )
                         ),
                         OpponentResponse(
-                            opponent = OpponentDetailsResponse(
+                            team = TeamResponse(
                                 id = 7,
                                 name = "Blue Team",
                                 imageUrl = null
@@ -127,9 +127,9 @@ class MatchRepositoryImplTest {
             )
         )
 
-        val opponents = repository.getMatches().dataOrNull()!!.first().teams
+        val teams = repository.getMatches().dataOrNull()!!.first().teams
 
-        opponents shouldBe Pair(
+        teams shouldBe Pair(
             Team(
                 id = TeamId(3),
                 name = "Red Team",
@@ -144,7 +144,7 @@ class MatchRepositoryImplTest {
     }
 
     @Test
-    fun `getMatches should return matches with default opponent if list is empty`() = runTest {
+    fun `getMatches should return matches with null teams if list is empty`() = runTest {
         coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
             listOf(
                 MatchResponse(
@@ -153,9 +153,9 @@ class MatchRepositoryImplTest {
             )
         )
 
-        val opponents = repository.getMatches().dataOrNull()!!.first().teams
+        val teams = repository.getMatches().dataOrNull()!!.first().teams
 
-        opponents shouldBe Pair(null, null)
+        teams shouldBe Pair(null, null)
     }
 
     @Test
