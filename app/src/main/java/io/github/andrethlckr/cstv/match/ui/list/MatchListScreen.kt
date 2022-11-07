@@ -138,12 +138,14 @@ fun MatchListScreenPreview() {
                         Team(
                             id = TeamId(2),
                             name = "First",
-                            image = null
+                            image = null,
+                            players = null
                         ),
                         Team(
                             id = TeamId(3),
                             name = "Second",
-                            image = null
+                            image = null,
+                            players = null
                         )
                     ),
                     league = League(
