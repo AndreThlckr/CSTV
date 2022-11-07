@@ -1,5 +1,6 @@
 package io.github.andrethlckr.cstv.match.domain
 
+import io.github.andrethlckr.test.DateTimeUtil.dateAt
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 import java.time.ZonedDateTime
@@ -26,7 +27,7 @@ class MatchTest {
             id: MatchId = MatchId(1),
             name: String = "Match name",
             status: MatchStatus = MatchStatus.NotStarted,
-            scheduledAt: ZonedDateTime = ZonedDateTime.now(),
+            scheduledAt: ZonedDateTime = dateAt(year = 2022),
             teams: Pair<Team, Team> = Pair(
                 Team(
                     id = TeamId(2),
