@@ -3,12 +3,12 @@ package io.github.andrethlckr.cstv.match.domain
 import io.github.andrethlckr.cstv.core.domain.ImageUrl
 
 @JvmInline
-value class OpponentId(
+value class TeamId(
     val value: Long
 )
 
-data class Opponent(
-    val id: OpponentId,
+data class Team(
+    val id: TeamId,
     val name: String,
     val image: ImageUrl?
 )

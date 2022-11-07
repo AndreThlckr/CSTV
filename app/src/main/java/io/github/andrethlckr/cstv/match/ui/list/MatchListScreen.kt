@@ -1,10 +1,5 @@
 package io.github.andrethlckr.cstv.match.ui.list
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,8 +29,8 @@ import io.github.andrethlckr.cstv.match.domain.LeagueId
 import io.github.andrethlckr.cstv.match.domain.Match
 import io.github.andrethlckr.cstv.match.domain.MatchId
 import io.github.andrethlckr.cstv.match.domain.MatchStatus
-import io.github.andrethlckr.cstv.match.domain.Opponent
-import io.github.andrethlckr.cstv.match.domain.OpponentId
+import io.github.andrethlckr.cstv.match.domain.Team
+import io.github.andrethlckr.cstv.match.domain.TeamId
 import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
 import java.time.ZonedDateTime
@@ -139,14 +134,14 @@ fun MatchListScreenPreview() {
                     name = "Match name",
                     status = MatchStatus.NotStarted,
                     scheduledAt = ZonedDateTime.now(),
-                    opponents = Pair(
-                        Opponent(
-                            id = OpponentId(2),
+                    teams = Pair(
+                        Team(
+                            id = TeamId(2),
                             name = "First",
                             image = null
                         ),
-                        Opponent(
-                            id = OpponentId(3),
+                        Team(
+                            id = TeamId(3),
                             name = "Second",
                             image = null
                         )

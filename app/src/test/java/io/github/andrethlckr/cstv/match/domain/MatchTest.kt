@@ -27,14 +27,14 @@ class MatchTest {
             name: String = "Match name",
             status: MatchStatus = MatchStatus.NotStarted,
             scheduledAt: ZonedDateTime = ZonedDateTime.now(),
-            opponents: Pair<Opponent, Opponent> = Pair(
-                Opponent(
-                    id = OpponentId(2),
+            teams: Pair<Team, Team> = Pair(
+                Team(
+                    id = TeamId(2),
                     name = "First",
                     image = null
                 ),
-                Opponent(
-                    id = OpponentId(3),
+                Team(
+                    id = TeamId(3),
                     name = "Second",
                     image = null
                 )
@@ -53,7 +53,7 @@ class MatchTest {
             name = name,
             status = status,
             scheduledAt = scheduledAt,
-            opponents = opponents,
+            teams = teams,
             league = league,
             series = series
         )

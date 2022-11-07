@@ -14,8 +14,8 @@ import io.github.andrethlckr.cstv.match.domain.Match
 import io.github.andrethlckr.cstv.match.domain.MatchId
 import io.github.andrethlckr.cstv.match.domain.MatchRepository
 import io.github.andrethlckr.cstv.match.domain.MatchStatus
-import io.github.andrethlckr.cstv.match.domain.Opponent
-import io.github.andrethlckr.cstv.match.domain.OpponentId
+import io.github.andrethlckr.cstv.match.domain.Team
+import io.github.andrethlckr.cstv.match.domain.TeamId
 import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
 import java.time.ZonedDateTime
@@ -34,7 +34,7 @@ class MatchRepositoryImpl @Inject constructor(
         name = response.name,
         status = statusFrom(response.status),
         scheduledAt = timeFrom(response.scheduledAt),
-        opponents = opponentsFrom(response.opponents),
+        teams = teamsFrom(response.opponents),
         league = leagueFrom(response.league),
         series = seriesFrom(response.series)
     )
@@ -48,14 +48,14 @@ class MatchRepositoryImpl @Inject constructor(
 
     private fun timeFrom(text: String?) = text?.let { ZonedDateTime.parse(it) }
 
-    private fun opponentsFrom(list: List<OpponentResponse>) = Pair(
+    private fun teamsFrom(list: List<OpponentResponse>) = Pair(
         first = opponentFrom(list.getOrNull(0)),
         second = opponentFrom(list.getOrNull(1))
     )
 
     private fun opponentFrom(response: OpponentResponse?) = response?.let {
-        Opponent(
-            id = OpponentId(response.opponent.id),
+        Team(
+            id = TeamId(response.opponent.id),
             name = response.opponent.name,
             image = ImageUrl.from(response.opponent.imageUrl)
         )

@@ -12,7 +12,7 @@ data class Match(
     val name: String,
     val status: MatchStatus,
     val scheduledAt: ZonedDateTime?,
-    val opponents: Pair<Opponent?, Opponent?>,
+    val teams: Pair<Team?, Team?>,
     val league: League,
     val series: Series
 ) {

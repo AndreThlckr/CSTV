@@ -39,8 +39,8 @@ import io.github.andrethlckr.cstv.match.domain.LeagueId
 import io.github.andrethlckr.cstv.match.domain.Match
 import io.github.andrethlckr.cstv.match.domain.MatchId
 import io.github.andrethlckr.cstv.match.domain.MatchStatus
-import io.github.andrethlckr.cstv.match.domain.Opponent
-import io.github.andrethlckr.cstv.match.domain.OpponentId
+import io.github.andrethlckr.cstv.match.domain.Team
+import io.github.andrethlckr.cstv.match.domain.TeamId
 import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
 import java.time.ZonedDateTime
@@ -60,8 +60,8 @@ fun MatchCard(
                 .padding(top = 24.dp)
         ) {
             DisputeRow(
-                first = match.opponents.first,
-                second = match.opponents.second,
+                first = match.teams.first,
+                second = match.teams.second,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
 
@@ -137,8 +137,8 @@ fun ScheduleIndicator(
 
 @Composable
 fun DisputeRow(
-    first: Opponent?,
-    second: Opponent?,
+    first: Team?,
+    second: Team?,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -161,14 +161,14 @@ fun DisputeRow(
 
 @Composable
 fun TeamEmblem(
-    opponent: Opponent?
+    team: Team?
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(opponent?.image?.url)
+                .data(team?.image?.url)
                 .crossfade(true)
                 .build(),
             placeholder = painterResource(R.drawable.circle_placeholder),
@@ -181,7 +181,7 @@ fun TeamEmblem(
         )
 
         Text(
-            text = opponent?.name.orEmpty(),
+            text = team?.name.orEmpty(),
             color = MaterialTheme.colors.onSurface,
             style = MaterialTheme.typography.body2,
             modifier = Modifier.padding(top = 10.dp)
@@ -233,14 +233,14 @@ fun MatchCardPreview() {
                 name = "Match name",
                 status = MatchStatus.NotStarted,
                 scheduledAt = ZonedDateTime.now(),
-                opponents = Pair(
-                    Opponent(
-                        id = OpponentId(2),
+                teams = Pair(
+                    Team(
+                        id = TeamId(2),
                         name = "First",
                         image = null
                     ),
-                    Opponent(
-                        id = OpponentId(3),
+                    Team(
+                        id = TeamId(3),
                         name = "Second",
                         image = null
                     )
@@ -302,8 +302,8 @@ fun ScheduleNextWeekIndicatorPreview() {
 fun DisputeRowPreview() {
     CSTVTheme {
         DisputeRow(
-            first = Opponent(
-                id = OpponentId(2),
+            first = Team(
+                id = TeamId(2),
                 name = "First",
                 image = null
             ),
@@ -317,8 +317,8 @@ fun DisputeRowPreview() {
 fun TeamEmblemPreview() {
     CSTVTheme {
         TeamEmblem(
-            opponent = Opponent(
-                id = OpponentId(2),
+            team = Team(
+                id = TeamId(2),
                 name = "First",
                 image = null
             )

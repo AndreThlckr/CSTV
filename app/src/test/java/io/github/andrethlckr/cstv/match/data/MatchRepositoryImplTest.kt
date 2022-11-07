@@ -14,8 +14,8 @@ import io.github.andrethlckr.cstv.match.domain.LeagueId
 import io.github.andrethlckr.cstv.match.domain.MatchId
 import io.github.andrethlckr.cstv.match.domain.MatchRepository
 import io.github.andrethlckr.cstv.match.domain.MatchStatus
-import io.github.andrethlckr.cstv.match.domain.Opponent
-import io.github.andrethlckr.cstv.match.domain.OpponentId
+import io.github.andrethlckr.cstv.match.domain.Team
+import io.github.andrethlckr.cstv.match.domain.TeamId
 import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
 import io.kotest.matchers.collections.shouldNotBeEmpty
@@ -103,7 +103,7 @@ class MatchRepositoryImplTest {
     }
 
     @Test
-    fun `getMatches should return matches with correct opponents`() = runTest {
+    fun `getMatches should return matches with correct teams`() = runTest {
         coEvery { getMatchesService.fetchUpcomingMatches() } returns NetworkResult.Success(
             listOf(
                 MatchResponse(
@@ -127,16 +127,16 @@ class MatchRepositoryImplTest {
             )
         )
 
-        val opponents = repository.getMatches().dataOrNull()!!.first().opponents
+        val opponents = repository.getMatches().dataOrNull()!!.first().teams
 
         opponents shouldBe Pair(
-            Opponent(
-                id = OpponentId(3),
+            Team(
+                id = TeamId(3),
                 name = "Red Team",
                 image = ImageUrl("www.red-team.com/pic")
             ),
-            Opponent(
-                id = OpponentId(7),
+            Team(
+                id = TeamId(7),
                 name = "Blue Team",
                 image = null
             )
@@ -153,7 +153,7 @@ class MatchRepositoryImplTest {
             )
         )
 
-        val opponents = repository.getMatches().dataOrNull()!!.first().opponents
+        val opponents = repository.getMatches().dataOrNull()!!.first().teams
 
         opponents shouldBe Pair(null, null)
     }
