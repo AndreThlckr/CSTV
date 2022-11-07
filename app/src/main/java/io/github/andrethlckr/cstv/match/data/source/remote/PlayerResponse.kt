@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PlayerResponse(
     @SerialName("player_id")
-    val id: Int = 0,
+    val id: Long = 0,
     @SerialName("name")
     val nickname: String = "",
     @SerialName("first_name")

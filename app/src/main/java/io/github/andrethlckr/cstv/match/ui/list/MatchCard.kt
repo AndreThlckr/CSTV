@@ -237,12 +237,14 @@ fun MatchCardPreview() {
                     Team(
                         id = TeamId(2),
                         name = "First",
-                        image = null
+                        image = null,
+                        players = null
                     ),
                     Team(
                         id = TeamId(3),
                         name = "Second",
-                        image = null
+                        image = null,
+                        players = null
                     )
                 ),
                 league = League(
@@ -305,7 +307,8 @@ fun DisputeRowPreview() {
             first = Team(
                 id = TeamId(2),
                 name = "First",
-                image = null
+                image = null,
+                players = null
             ),
             second = null
         )
@@ -320,7 +323,8 @@ fun TeamEmblemPreview() {
             team = Team(
                 id = TeamId(2),
                 name = "First",
-                image = null
+                image = null,
+                players = null
             )
         )
     }

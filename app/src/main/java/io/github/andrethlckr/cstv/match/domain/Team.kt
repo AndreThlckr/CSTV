@@ -10,5 +10,6 @@ value class TeamId(
 data class Team(
     val id: TeamId,
     val name: String,
-    val image: ImageUrl?
+    val image: ImageUrl?,
+    val players: List<Player>?
 )

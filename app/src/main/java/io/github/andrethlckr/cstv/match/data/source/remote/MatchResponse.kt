@@ -25,5 +25,5 @@ data class MatchResponse(
     @SerialName("serie")
     val series: SeriesResponse = SeriesResponse(),
     @SerialName("players")
-    val players: List<PlayerResponse> = emptyList(),
+    val players: List<PlayerResponse>? = null
 )
