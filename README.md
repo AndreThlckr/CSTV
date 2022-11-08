@@ -27,7 +27,7 @@ do projeto.
 * Retrofit e kotlinx.serialization foram utilizados para chamadas HTTP. Coil foi utilizado para 
 carregamento de imagens.
 * A UI foi desenvolvida usando Jetpack Compose.
-* A splashscreen foi criada usando a [SplashScreen API](https://developer.android.com/develop/ui/views/launch/splash-screen)
+* A splashscreen foi criada usando a [SplashScreen API](https://developer.android.com/develop/ui/views/launch/splash-screen).
 * Para lidar com datas e fuso horários foi utilizado a biblioteca do Java Time.
 * Para injeção de dependências foi utilizado o Hilt.
 * Foram implementados testes unitários; foi utilizado o Kotest para asserções idiomáticas e o MockK
@@ -36,7 +36,7 @@ para criação de mocks.
 ## Arquitetura
 
 * O projeto segue os princípios da Clean Architecture, que fundamentalmente separa as classes em 3
-camadas: dados (data), domínio (domain) e apresentação (presentation).
+camadas: dados (data), domínio (domain) e apresentação (ui).
 
     * Domain: contém as classes fundamentais para as regras de negócio do app, não contendo nenhuma
     dependência em outros frameworks ou na infraestrutura do app. Define as entidades usadas no app
