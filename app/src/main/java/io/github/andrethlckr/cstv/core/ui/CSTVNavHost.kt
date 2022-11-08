@@ -2,7 +2,6 @@ package io.github.andrethlckr.cstv.core.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -22,7 +21,8 @@ fun CSTVNavHost(
     NavHost(navController = navController, startDestination = "match/list") {
         composable("match/list") {
             MatchListDestination(
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
+                onMatchSelected = { id -> navController.navigate("match/details/${id.value}") }
             )
         }
 
@@ -40,7 +40,10 @@ fun CSTVNavHost(
                 onDispose {  }
             }
 
-            MatchDetailsDestination()
+            MatchDetailsDestination(
+                viewModel = viewModel,
+                onNavigateUp = { navController.navigateUp() }
+            )
         }
     }
 }

@@ -2,20 +2,16 @@ package io.github.andrethlckr.cstv.match.ui.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,27 +20,30 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.andrethlckr.cstv.R
 import io.github.andrethlckr.cstv.core.ui.theme.CSTVTheme
+import io.github.andrethlckr.cstv.core.ui.widget.LoadingIndicator
 import io.github.andrethlckr.cstv.match.domain.League
 import io.github.andrethlckr.cstv.match.domain.LeagueId
 import io.github.andrethlckr.cstv.match.domain.Match
 import io.github.andrethlckr.cstv.match.domain.MatchId
 import io.github.andrethlckr.cstv.match.domain.MatchStatus
-import io.github.andrethlckr.cstv.match.domain.Team
-import io.github.andrethlckr.cstv.match.domain.TeamId
 import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
+import io.github.andrethlckr.cstv.match.domain.Team
+import io.github.andrethlckr.cstv.match.domain.TeamId
 import java.time.ZonedDateTime
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun MatchListDestination(
-    viewModel: MatchListViewModel
+    viewModel: MatchListViewModel,
+    onMatchSelected: (MatchId) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     MatchListScreen(
         isLoading = state.isLoading,
-        matches = state.matches
+        matches = state.matches,
+        onMatchSelected = onMatchSelected
     )
 }
 
@@ -52,7 +51,8 @@ fun MatchListDestination(
 @Composable
 fun MatchListScreen(
     isLoading: Boolean,
-    matches: List<Match>
+    matches: List<Match>,
+    onMatchSelected: (MatchId) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -80,6 +80,7 @@ fun MatchListScreen(
             ) {
                 MatchCard(
                     match = it,
+                    onClick = { onMatchSelected(it.id) },
                     modifier = Modifier
                         .padding(bottom = 24.dp)
                         .animateItemPlacement()
@@ -95,29 +96,14 @@ fun MatchListScreen(
     }
 }
 
-
-@Composable
-fun LoadingIndicator(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-    ) {
-        CircularProgressIndicator(
-            color = contentColorFor(MaterialTheme.colors.background)
-        )
-    }
-}
-
 @Preview
 @Composable
 fun LoadingMatchListScreenPreview() {
     CSTVTheme {
         MatchListScreen(
             isLoading = true,
-            matches = emptyList()
+            matches = emptyList(),
+            onMatchSelected = { }
         )
     }
 }
@@ -158,7 +144,8 @@ fun MatchListScreenPreview() {
                         name = "Series"
                     ),
                 )
-            }
+            },
+            onMatchSelected = { }
         )
     }
 }
