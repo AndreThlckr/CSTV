@@ -9,6 +9,11 @@ data class OpponentResponse(
     val team: TeamResponse = TeamResponse(),
 )
 
+/**
+ * Represents a CS:GO team from PandaScore API.
+ *
+ * The field [players] is only available when searching the teams directly.
+ */
 @Serializable
 data class TeamResponse(
     @SerialName("id")
@@ -17,4 +22,6 @@ data class TeamResponse(
     val name: String = "",
     @SerialName("image_url")
     val imageUrl: String? = null,
+    @SerialName("players")
+    val players: List<PlayerResponse>? = null
 )

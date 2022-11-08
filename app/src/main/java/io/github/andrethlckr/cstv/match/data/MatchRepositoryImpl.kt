@@ -1,12 +1,12 @@
 package io.github.andrethlckr.cstv.match.data
 
 import io.github.andrethlckr.cstv.core.data.NetworkResult
+import io.github.andrethlckr.cstv.core.data.dataOrNull
 import io.github.andrethlckr.cstv.core.data.map
 import io.github.andrethlckr.cstv.core.data.mapList
 import io.github.andrethlckr.cstv.core.domain.ImageUrl
 import io.github.andrethlckr.cstv.match.data.source.remote.LeagueResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.MatchResponse
-import io.github.andrethlckr.cstv.match.data.source.remote.OpponentResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.PlayerResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.SeriesResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.TeamResponse
@@ -20,10 +20,10 @@ import io.github.andrethlckr.cstv.match.domain.MatchRepository
 import io.github.andrethlckr.cstv.match.domain.MatchStatus
 import io.github.andrethlckr.cstv.match.domain.Player
 import io.github.andrethlckr.cstv.match.domain.PlayerId
-import io.github.andrethlckr.cstv.match.domain.Team
-import io.github.andrethlckr.cstv.match.domain.TeamId
 import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
+import io.github.andrethlckr.cstv.match.domain.Team
+import io.github.andrethlckr.cstv.match.domain.TeamId
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
@@ -36,19 +36,38 @@ class MatchRepositoryImpl @Inject constructor(
         .fetchUpcomingMatches()
         .mapList { matchFrom(it) }
 
-    override suspend fun getMatchDetails(id: MatchId): NetworkResult<Match> = getMatchDetailsService
-        .fetchMatchDetails(id.value)
-        .map { matchFrom(it) }
+    override suspend fun getMatchDetails(id: MatchId): NetworkResult<Match> {
+        val matchResponse = getMatchesService
+            .fetchUpcomingMatches(matchId = id.value)
+            .map { it.firstOrNull() }
+            .dataOrNull() ?: return NetworkResult.Failure
 
-    private fun matchFrom(response: MatchResponse) = Match(
+        val firstTeamId = matchResponse.opponents.getOrNull(0)?.team?.id
+        val secondTeamId = matchResponse.opponents.getOrNull(0)?.team?.id
+
+        val teamsResponse = if (firstTeamId != null && secondTeamId != null) {
+            getMatchDetailsService
+                .fetchMatchDetails(firstTeamId = firstTeamId, secondTeamId = secondTeamId)
+                .dataOrNull() ?: emptyList()
+        } else emptyList()
+
+        return NetworkResult.Success(
+            matchFrom(
+                response = matchResponse,
+                teams = teamsResponse
+            )
+        )
+    }
+
+    private fun matchFrom(
+        response: MatchResponse,
+        teams: List<TeamResponse> = response.opponents.map { it.team }
+    ) = Match(
         id = MatchId(response.id),
         name = response.name,
         status = statusFrom(response.status),
         scheduledAt = timeFrom(response.scheduledAt),
-        teams = teamsFrom(
-            opponents = response.opponents,
-            players = response.players
-        ),
+        teams = teamsFrom(teams),
         league = leagueFrom(response.league),
         series = seriesFrom(response.series)
     )
@@ -63,28 +82,18 @@ class MatchRepositoryImpl @Inject constructor(
     private fun timeFrom(text: String?) = text?.let { ZonedDateTime.parse(it) }
 
     private fun teamsFrom(
-        opponents: List<OpponentResponse>,
-        players: List<PlayerResponse>?
+        teams: List<TeamResponse>
     ) = Pair(
-        first = opponentFrom(
-            team = opponents.getOrNull(0)?.team,
-            players = players?.take(players.size / 2)
-        ),
-        second = opponentFrom(
-            team = opponents.getOrNull(1)?.team,
-            players = players?.takeLast(players.size / 2)
-        )
+        first = teamFrom(teams.getOrNull(0)),
+        second = teamFrom(teams.getOrNull(1)),
     )
 
-    private fun opponentFrom(
-        team: TeamResponse?,
-        players: List<PlayerResponse>?
-    ) = team?.let {
+    private fun teamFrom(team: TeamResponse?) = team?.let {
         Team(
             id = TeamId(team.id),
             name = team.name,
             image = ImageUrl.from(team.imageUrl),
-            players = players?.map { response -> playerFrom(response) }
+            players = team.players?.map { response -> playerFrom(response) }
         )
     }
 
