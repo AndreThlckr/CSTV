@@ -8,8 +8,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.github.andrethlckr.cstv.core.data.NetworkResultCallAdapterFactory
 import io.github.andrethlckr.cstv.match.data.MatchRepositoryImpl
+import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchOpponentsService
 import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchesService
-import io.github.andrethlckr.cstv.match.data.source.remote.service.GetTeamsService
 import io.github.andrethlckr.cstv.match.data.source.remote.service.PandaScoreTokenInterceptor
 import io.github.andrethlckr.cstv.match.domain.MatchRepository
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -52,7 +52,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGetTeamsService(retrofit: Retrofit): GetTeamsService = retrofit.create(GetTeamsService::class.java)
+    fun provideGetMatchOpponentsService(retrofit: Retrofit): GetMatchOpponentsService = retrofit.create(GetMatchOpponentsService::class.java)
 }
 
 private val jsonConfiguration = Json {

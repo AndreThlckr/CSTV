@@ -4,6 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class OpponentsResponse(
+    @SerialName("opponents")
+    val teams: List<TeamResponse> = emptyList(),
+)
+
+@Serializable
 data class OpponentResponse(
     @SerialName("opponent")
     val team: TeamResponse = TeamResponse(),
