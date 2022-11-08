@@ -3,10 +3,13 @@ package io.github.andrethlckr.cstv.match.ui.details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -80,34 +83,39 @@ fun MatchDetailsScreen(
     state: MatchDetailsState,
     onNavigateUp: () -> Unit
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.background)
-    ) {
-        TitleBar(
-            league = state.match?.league?.name.orEmpty(),
-            series = state.match?.series?.name.orEmpty(),
-            onNavigateUp = onNavigateUp
-        )
-
-        when {
-            state.isLoading -> LoadingIndicator(
+    BoxWithConstraints {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .weight(1F)
                     .fillMaxWidth()
-            )
-            state.match != null -> MatchDetailsContent(match = state.match)
+            ) {
+                TitleBar(
+                    title = state.title,
+                    onNavigateUp = onNavigateUp
+                )
+
+                when {
+                    state.isLoading -> LoadingIndicator(
+                        modifier = Modifier
+                            .height(this@BoxWithConstraints.maxHeight)
+                            .fillMaxWidth()
+                    )
+                    state.match != null -> MatchDetailsContent(match = state.match)
+                }
+            }
         }
     }
 }
 
 @Composable
 fun TitleBar(
-    league: String,
-    series: String,
+    title: String,
     onNavigateUp: () -> Unit
 ) {
     Box(
@@ -116,7 +124,7 @@ fun TitleBar(
             .padding(top = 32.dp)
     ) {
         Text(
-            text = "$league $series",
+            text = title,
             color = MaterialTheme.colors.onBackground,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h6,
@@ -336,6 +344,7 @@ fun LoadingMatchDetailsScreenPreview() {
         MatchDetailsScreen(
             state = MatchDetailsState(
                 isLoading = true,
+                title = "First League of 2022",
                 match = null
             ),
             onNavigateUp = { }
@@ -350,6 +359,7 @@ fun MatchDetailsScreenPreview() {
         MatchDetailsScreen(
             state = MatchDetailsState(
                 isLoading = false,
+                title = "First League of 2022",
                 match = Match(
                     id = MatchId(1),
                     name = "Match name",

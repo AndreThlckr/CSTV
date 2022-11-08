@@ -47,7 +47,7 @@ class MatchDetailsViewModelTest {
     }
 
     @Test
-    fun `setMatchId should load match details`() = runTest {
+    fun `setMatch should load match details`() = runTest {
         val viewModel = viewModel(
             matchResult = NetworkResult.Success(
                 matchWith(
@@ -57,7 +57,7 @@ class MatchDetailsViewModelTest {
             )
         )
 
-        viewModel.setMatchId(MatchId(5))
+        viewModel.setMatch(MatchId(5))
 
         val state = viewModel.state.value
         state.isLoading shouldBe false

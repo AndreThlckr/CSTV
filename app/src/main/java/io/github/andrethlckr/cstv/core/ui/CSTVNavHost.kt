@@ -27,17 +27,24 @@ fun CSTVNavHost(
         }
 
         composable(
-            route = "match/details/{matchId}",
-            arguments = listOf(navArgument("matchId") { type = NavType.LongType })
+            route = "match/details/{matchId}?titlePreview={titlePreview}",
+            arguments = listOf(
+                navArgument("matchId") { type = NavType.LongType },
+                navArgument("titlePreview") { defaultValue = "" }
+            )
         ) {
             val matchId = it.arguments?.getLong("matchId")
+            val titlePreview = it.arguments?.getString("titlePreview") ?: ""
             val viewModel: MatchDetailsViewModel = hiltViewModel()
 
             DisposableEffect(matchId) {
                 if (matchId == null) navController.navigateUp()
-                else viewModel.setMatchId(MatchId(matchId))
+                else viewModel.setMatch(
+                    id = MatchId(matchId),
+                    titlePreview = titlePreview
+                )
 
-                onDispose {  }
+                onDispose { }
             }
 
             MatchDetailsDestination(

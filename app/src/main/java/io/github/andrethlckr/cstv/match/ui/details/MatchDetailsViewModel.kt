@@ -20,12 +20,17 @@ class MatchDetailsViewModel @Inject constructor(
     private val _state = MutableStateFlow(
         MatchDetailsState(
             isLoading = true,
+            title = "",
             match = null
         )
     )
     val state = _state.asStateFlow()
 
-    fun setMatchId(id: MatchId) {
+    fun setMatch(
+        id: MatchId,
+        titlePreview: String = ""
+    ) {
+        _state.update { it.copy(title = titlePreview) }
         loadMatchWith(id)
     }
 
@@ -33,9 +38,11 @@ class MatchDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             when(val result = repository.getMatchDetails(id)) {
                 is NetworkResult.Success -> _state.update {
+                    val match = result.data
                     it.copy(
                         isLoading = false,
-                        match = result.data
+                        title = "${match.league.name} ${match.series.name}",
+                        match = match
                     )
                 }
                 is NetworkResult.Failure -> loadMatchWith(id)
