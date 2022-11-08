@@ -10,8 +10,8 @@ import io.github.andrethlckr.cstv.match.data.source.remote.MatchResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.PlayerResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.SeriesResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.TeamResponse
-import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchDetailsService
 import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchesService
+import io.github.andrethlckr.cstv.match.data.source.remote.service.GetTeamsService
 import io.github.andrethlckr.cstv.match.domain.League
 import io.github.andrethlckr.cstv.match.domain.LeagueId
 import io.github.andrethlckr.cstv.match.domain.Match
@@ -24,44 +24,50 @@ import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
 import io.github.andrethlckr.cstv.match.domain.Team
 import io.github.andrethlckr.cstv.match.domain.TeamId
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
 class MatchRepositoryImpl @Inject constructor(
     private val getMatchesService: GetMatchesService,
-    private val getMatchDetailsService: GetMatchDetailsService
+    private val getTeamsService: GetTeamsService
 ) : MatchRepository {
 
     override suspend fun getMatches(): NetworkResult<List<Match>> = getMatchesService
         .fetchUpcomingMatches()
         .mapList { matchFrom(it) }
 
-    override suspend fun getMatchDetails(id: MatchId): NetworkResult<Match> {
+    override suspend fun getMatchDetails(id: MatchId): NetworkResult<Match> = coroutineScope {
         val matchResponse = getMatchesService
             .fetchUpcomingMatches(matchId = id.value)
             .map { it.firstOrNull() }
-            .dataOrNull() ?: return NetworkResult.Failure
+            .dataOrNull() ?: return@coroutineScope NetworkResult.Failure
 
         val firstTeamId = matchResponse.opponents.getOrNull(0)?.team?.id
-        val secondTeamId = matchResponse.opponents.getOrNull(0)?.team?.id
+        val firstTeam = async { getTeamWith(firstTeamId) }
 
-        val teamsResponse = if (firstTeamId != null && secondTeamId != null) {
-            getMatchDetailsService
-                .fetchMatchDetails(firstTeamId = firstTeamId, secondTeamId = secondTeamId)
-                .dataOrNull() ?: emptyList()
-        } else emptyList()
+        val secondTeamId = matchResponse.opponents.getOrNull(1)?.team?.id
+        val secondTeam = async { getTeamWith(secondTeamId) }
 
-        return NetworkResult.Success(
+        NetworkResult.Success(
             matchFrom(
                 response = matchResponse,
-                teams = teamsResponse
+                teams = awaitAll(firstTeam, secondTeam)
             )
         )
     }
 
+    private suspend fun getTeamWith(id: Long?): TeamResponse? = id?.let {
+        getTeamsService
+            .fetchTeams(teamId = id)
+            .dataOrNull() ?: emptyList()
+    }?.firstOrNull()
+
     private fun matchFrom(
         response: MatchResponse,
-        teams: List<TeamResponse> = response.opponents.map { it.team }
+        teams: List<TeamResponse?> = response.opponents.map { it.team }
     ) = Match(
         id = MatchId(response.id),
         name = response.name,
@@ -82,7 +88,7 @@ class MatchRepositoryImpl @Inject constructor(
     private fun timeFrom(text: String?) = text?.let { ZonedDateTime.parse(it) }
 
     private fun teamsFrom(
-        teams: List<TeamResponse>
+        teams: List<TeamResponse?>
     ) = Pair(
         first = teamFrom(teams.getOrNull(0)),
         second = teamFrom(teams.getOrNull(1)),

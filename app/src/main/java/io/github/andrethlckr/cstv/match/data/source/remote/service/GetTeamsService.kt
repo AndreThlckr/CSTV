@@ -5,11 +5,10 @@ import io.github.andrethlckr.cstv.match.data.source.remote.TeamResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface GetMatchDetailsService {
+interface GetTeamsService {
 
     @GET("/csgo/teams")
-    suspend fun fetchMatchDetails(
-        @Query("filter[id][0]", encoded = true) firstTeamId: Long,
-        @Query("filter[id][1]", encoded = true) secondTeamId: Long
+    suspend fun fetchTeams(
+        @Query("filter[id]", encoded = true) teamId: Long
     ): NetworkResult<List<TeamResponse>>
 }

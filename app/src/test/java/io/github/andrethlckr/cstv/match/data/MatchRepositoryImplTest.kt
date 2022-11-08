@@ -5,23 +5,22 @@ import io.github.andrethlckr.cstv.core.data.dataOrNull
 import io.github.andrethlckr.cstv.core.domain.ImageUrl
 import io.github.andrethlckr.cstv.match.data.source.remote.LeagueResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.MatchResponse
-import io.github.andrethlckr.cstv.match.data.source.remote.TeamResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.OpponentResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.PlayerResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.SeriesResponse
-import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchDetailsService
+import io.github.andrethlckr.cstv.match.data.source.remote.TeamResponse
 import io.github.andrethlckr.cstv.match.data.source.remote.service.GetMatchesService
+import io.github.andrethlckr.cstv.match.data.source.remote.service.GetTeamsService
 import io.github.andrethlckr.cstv.match.domain.League
 import io.github.andrethlckr.cstv.match.domain.LeagueId
 import io.github.andrethlckr.cstv.match.domain.MatchId
 import io.github.andrethlckr.cstv.match.domain.MatchRepository
 import io.github.andrethlckr.cstv.match.domain.MatchStatus
-import io.github.andrethlckr.cstv.match.domain.Team
-import io.github.andrethlckr.cstv.match.domain.TeamId
 import io.github.andrethlckr.cstv.match.domain.Series
 import io.github.andrethlckr.cstv.match.domain.SeriesId
+import io.github.andrethlckr.cstv.match.domain.Team
+import io.github.andrethlckr.cstv.match.domain.TeamId
 import io.kotest.matchers.collections.shouldNotBeEmpty
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -35,11 +34,11 @@ import java.time.ZonedDateTime
 class MatchRepositoryImplTest {
 
     private val getMatchesService: GetMatchesService = mockk()
-    private val getMatchDetailsService: GetMatchDetailsService = mockk()
+    private val getTeamsService: GetTeamsService = mockk()
 
     private val repository: MatchRepository = MatchRepositoryImpl(
         getMatchesService = getMatchesService,
-        getMatchDetailsService = getMatchDetailsService
+        getTeamsService = getTeamsService
     )
 
     @Test
@@ -50,16 +49,6 @@ class MatchRepositoryImplTest {
         val matches = repository.getMatches().dataOrNull()
 
         matches.shouldNotBeEmpty()
-    }
-
-    @Test
-    fun `getMatchDetails should return match with given id`() = runTest {
-        coEvery { getMatchDetailsService.fetchMatchDetails(matchId = 5) }
-            .returns(NetworkResult.Success(MatchResponse()))
-
-        val match = repository.getMatchDetails(id = MatchId(5)).dataOrNull()
-
-        match.shouldNotBeNull()
     }
 
     @Test
@@ -137,8 +126,7 @@ class MatchRepositoryImplTest {
                                 imageUrl = null
                             )
                         )
-                    ),
-                    players = null
+                    )
                 )
             )
         )
@@ -221,41 +209,39 @@ class MatchRepositoryImplTest {
     }
 
     @Test
-    fun `getMatchDetails should return match with players split into teams`() = runTest {
-        coEvery { getMatchDetailsService.fetchMatchDetails(matchId = 1) } returns NetworkResult.Success(
-            MatchResponse(
-                opponents = listOf(
-                    OpponentResponse(
-                        team = TeamResponse(id = 1)
-                    ),
-                    OpponentResponse(
-                        team = TeamResponse(id = 2)
+    fun `getMatchDetails should return match with teams`() = runTest {
+        coEvery { getMatchesService.fetchUpcomingMatches(matchId = 1) } returns NetworkResult.Success(
+            listOf(
+                MatchResponse(
+                    opponents = listOf(
+                        OpponentResponse(
+                            team = TeamResponse(id = 1)
+                        ),
+                        OpponentResponse(
+                            team = TeamResponse(id = 2)
+                        )
                     )
-                ),
-                players = listOf(
-                    PlayerResponse(
-                        id = 1,
-                        nickname = "Aba"
-                    ),
-                    PlayerResponse(
-                        id = 2,
-                        nickname = "Ben"
-                    ),
-                    PlayerResponse(
-                        id = 3,
-                        nickname = "Cid"
-                    ),
-                    PlayerResponse(
-                        id = 4,
-                        nickname = "Dan"
-                    ),
-                    PlayerResponse(
-                        id = 5,
-                        nickname = "Eli"
-                    ),
-                    PlayerResponse(
-                        id = 6,
-                        nickname = "Fei"
+                )
+            )
+        )
+        coEvery { getTeamsService.fetchTeams(teamId = 1) } returns NetworkResult.Success(
+            listOf(
+                TeamResponse(
+                    players = listOf(
+                        PlayerResponse(nickname = "Aba"),
+                        PlayerResponse(nickname = "Ben"),
+                        PlayerResponse(nickname = "Cid")
+                    )
+                )
+            )
+        )
+        coEvery { getTeamsService.fetchTeams(teamId = 2) } returns NetworkResult.Success(
+            listOf(
+                TeamResponse(
+                    players = listOf(
+                        PlayerResponse(nickname = "Dan"),
+                        PlayerResponse(nickname = "Eli"),
+                        PlayerResponse(nickname = "Fei")
                     )
                 )
             )

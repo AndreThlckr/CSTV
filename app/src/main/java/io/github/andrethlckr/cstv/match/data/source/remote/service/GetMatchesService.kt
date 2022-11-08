@@ -7,8 +7,8 @@ import retrofit2.http.Query
 
 interface GetMatchesService {
 
-    @GET("/csgo/matches/upcoming")
+    @GET("/csgo/matches/upcoming?sort=begin_at&sort=scheduled_at")
     suspend fun fetchUpcomingMatches(
-        @Query("filter[id][0]", encoded = true) matchId: Long? = null
+        @Query("filter[id]", encoded = true) matchId: Long? = null
     ): NetworkResult<List<MatchResponse>>
 }

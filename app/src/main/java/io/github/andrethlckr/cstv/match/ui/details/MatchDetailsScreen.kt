@@ -6,14 +6,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -84,7 +83,8 @@ fun MatchDetailsScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .fillMaxWidth()
             .background(MaterialTheme.colors.background)
     ) {
         TitleBar(
@@ -110,16 +110,26 @@ fun TitleBar(
     series: String,
     onNavigateUp: () -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 32.dp, end = 48.dp)
+            .padding(top = 32.dp)
     ) {
+        Text(
+            text = "$league $series",
+            color = MaterialTheme.colors.onBackground,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier
+                .padding(horizontal = 56.dp)
+                .align(Alignment.Center)
+        )
+
         IconButton(
             onClick = onNavigateUp,
-            modifier = Modifier.padding(start = 24.dp)
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .align(Alignment.CenterStart)
         ) {
             Icon(
                 imageVector = Icons.Outlined.ArrowBack,
@@ -127,18 +137,8 @@ fun TitleBar(
                 contentDescription = "Back"
             )
         }
-
-        Text(
-            text = "$league $series",
-            color = MaterialTheme.colors.onBackground,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.h6
-        )
-        
-        Spacer(modifier = Modifier.width(24.dp))
     }
 }
-
 
 @Composable
 private fun ColumnScope.MatchDetailsContent(
@@ -225,12 +225,12 @@ fun LeftPlayerCard(
                 nickname = player.nickname,
                 name = player.fullName,
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.padding(
-                    bottom = 8.dp,
-                    start = 16.dp,
-                    top = 16.dp,
-                    end = 16.dp
-                )
+                textAlign = TextAlign.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 8.dp, start = 8.dp, top = 16.dp, end = 72.dp
+                    )
             )
         }
 
@@ -261,12 +261,12 @@ fun RightPlayerCard(
                 nickname = player.nickname,
                 name = player.fullName,
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier.padding(
-                    bottom = 8.dp,
-                    end = 16.dp,
-                    top = 16.dp,
-                    start = 16.dp
-                )
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 8.dp, end = 8.dp, top = 16.dp, start = 72.dp
+                    )
             )
         }
 
@@ -285,7 +285,8 @@ fun PlayerName(
     nickname: String,
     name: String,
     modifier: Modifier = Modifier,
-    horizontalAlignment: Alignment.Horizontal = Alignment.End
+    horizontalAlignment: Alignment.Horizontal = Alignment.End,
+    textAlign: TextAlign = TextAlign.End
 ) {
     Column(
         horizontalAlignment = horizontalAlignment,
@@ -294,12 +295,14 @@ fun PlayerName(
         Text(
             text = nickname,
             color = MaterialTheme.colors.onBackground,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            textAlign = textAlign
         )
         Text(
             text = name,
             color = MaterialTheme.colors.secondaryText,
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.body1,
+            textAlign = textAlign
         )
     }
 }
@@ -318,7 +321,7 @@ fun PlayerImage(
         error = ColorPainter(MaterialTheme.colors.placeholder),
         fallback = ColorPainter(MaterialTheme.colors.placeholder),
         contentDescription = stringResource(R.string.player_image_description),
-        contentScale = ContentScale.Fit,
+        contentScale = ContentScale.Crop,
         modifier = modifier
             .size(48.dp)
             .clip(RoundedCornerShape(8.dp))
