@@ -15,9 +15,6 @@ Os dados usados pelo app são consumidos da API [PandaScore](https://pandascore.
 * Gere uma cópia do arquivo `secrets.defaults.properties` com o nome `secrets.properties` na *root*
 do projeto.
 * Substitua `"YOUR_API_KEY"` por uma chave válida da API *PandaScore*
-    * Obs.: chaves gratuitas da API não dão acesso à busca detalhada de partidas, então a tela de
-  detalhes irá carregar indefinidamente. Ainda é possível ver um preview da tela através do Android
-  Studio, na aba Design do arquivo `MatchDetailsScreen.kt`
 * Execute o projeto.
 
 ## Especificações técnicas
