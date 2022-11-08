@@ -6,4 +6,5 @@
     <string name="versus">vs</string>
     <string name="live">Agora</string>
     <string name="league_emblem_description">Logo da liga</string>
+    <string name="player_image_description">Foto de perfil do jogador</string>
 </resources>

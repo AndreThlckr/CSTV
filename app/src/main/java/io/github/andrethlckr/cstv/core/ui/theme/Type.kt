@@ -10,31 +10,31 @@ val Typography = Typography(
     h2 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W500,
-        fontSize = 32.sp
+        fontSize = 36.sp
     ),
     h6 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W500,
-        fontSize = 18.sp
+        fontSize = 22.sp
     ),
     subtitle1 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W700,
-        fontSize = 14.sp
+        fontSize = 18.sp
     ),
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W400,
-        fontSize = 12.sp
+        fontSize = 16.sp
     ),
     body2 = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W400,
-        fontSize = 10.sp
+        fontSize = 14.sp
     ),
     caption = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.W400,
-        fontSize = 8.sp
+        fontSize = 12.sp
     )
 )
