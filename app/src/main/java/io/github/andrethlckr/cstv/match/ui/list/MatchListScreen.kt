@@ -36,7 +36,7 @@ import java.time.ZonedDateTime
 @Composable
 fun MatchListDestination(
     viewModel: MatchListViewModel,
-    onMatchSelected: (MatchId) -> Unit
+    onMatchSelected: (Match) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -52,7 +52,7 @@ fun MatchListDestination(
 fun MatchListScreen(
     isLoading: Boolean,
     matches: List<Match>,
-    onMatchSelected: (MatchId) -> Unit
+    onMatchSelected: (Match) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -80,7 +80,7 @@ fun MatchListScreen(
             ) {
                 MatchCard(
                     match = it,
-                    onClick = { onMatchSelected(it.id) },
+                    onClick = { onMatchSelected(it) },
                     modifier = Modifier
                         .padding(bottom = 24.dp)
                         .animateItemPlacement()

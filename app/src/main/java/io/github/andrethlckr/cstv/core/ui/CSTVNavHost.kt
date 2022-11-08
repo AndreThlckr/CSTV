@@ -22,7 +22,9 @@ fun CSTVNavHost(
         composable("match/list") {
             MatchListDestination(
                 viewModel = hiltViewModel(),
-                onMatchSelected = { id -> navController.navigate("match/details/${id.value}") }
+                onMatchSelected = { match ->
+                    navController.navigate("match/details/${match.id.value}?titlePreview=${match.title()}")
+                }
             )
         }
 

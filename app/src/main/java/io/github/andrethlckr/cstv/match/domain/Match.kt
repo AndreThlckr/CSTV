@@ -18,4 +18,6 @@ data class Match(
 ) {
 
     fun isInProgress() = status == MatchStatus.InProgress
+
+    fun title() = "${league.name} ${series.name}"
 }

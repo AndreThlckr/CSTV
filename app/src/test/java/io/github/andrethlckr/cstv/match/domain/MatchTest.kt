@@ -21,6 +21,23 @@ class MatchTest {
         match.isInProgress() shouldBe false
     }
 
+    @Test
+    fun `title should return match league and series`() {
+        val match = matchWith(
+            league = League(
+                id = LeagueId(4),
+                name = "The League",
+                image = null
+            ),
+            series = Series(
+                id = SeriesId(5),
+                name = "2022 Series"
+            )
+        )
+
+        match.title() shouldBe "The League 2022 Series"
+    }
+
     companion object {
 
         fun matchWith(

@@ -41,7 +41,7 @@ class MatchDetailsViewModel @Inject constructor(
                     val match = result.data
                     it.copy(
                         isLoading = false,
-                        title = "${match.league.name} ${match.series.name}",
+                        title = match.title(),
                         match = match
                     )
                 }
