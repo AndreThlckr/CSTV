@@ -1,6 +1,5 @@
 package io.github.andrethlckr.cstv.core.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
@@ -22,10 +21,13 @@ private val ColorPalette = darkColors(
     onSecondary = Color.Black,
 )
 
-val Colors.highlightColor: Color
+val Colors.placeholder: Color
+    get() = SilverSand
+
+val Colors.highlight: Color
     get() = ImperialRed
 
-val Colors.secondaryTextColor: Color
+val Colors.secondaryText: Color
     get() = OldLavender
 
 fun TextStyle.bolder() = copy(fontWeight = FontWeight.W700)

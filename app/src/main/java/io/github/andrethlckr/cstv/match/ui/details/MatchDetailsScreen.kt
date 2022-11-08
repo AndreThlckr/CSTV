@@ -2,13 +2,16 @@ package io.github.andrethlckr.cstv.match.ui.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -24,16 +27,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import io.github.andrethlckr.cstv.R
+import io.github.andrethlckr.cstv.core.domain.ImageUrl
 import io.github.andrethlckr.cstv.core.ui.date.rememberDateToTextFormatter
 import io.github.andrethlckr.cstv.core.ui.theme.CSTVTheme
 import io.github.andrethlckr.cstv.core.ui.theme.bolder
-import io.github.andrethlckr.cstv.core.ui.theme.secondaryTextColor
+import io.github.andrethlckr.cstv.core.ui.theme.placeholder
+import io.github.andrethlckr.cstv.core.ui.theme.secondaryText
 import io.github.andrethlckr.cstv.core.ui.widget.LoadingIndicator
 import io.github.andrethlckr.cstv.match.domain.League
 import io.github.andrethlckr.cstv.match.domain.LeagueId
@@ -118,6 +131,7 @@ fun TitleBar(
         Text(
             text = "$league $series",
             color = MaterialTheme.colors.onBackground,
+            textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h6
         )
         
@@ -198,25 +212,35 @@ fun PlayersGrid(
 fun LeftPlayerCard(
     player: Player
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp)
-            .clip(shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp))
-            .background(color = MaterialTheme.colors.surface)
-    ) {
-        PlayerName(
-            nickname = player.nickname,
-            name = player.fullName,
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier.padding(
-                bottom = 8.dp,
-                start = 16.dp,
-                top = 16.dp,
-                end = 16.dp
+    Box {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+                .clip(shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp))
+                .background(color = MaterialTheme.colors.surface)
+        ) {
+            PlayerName(
+                nickname = player.nickname,
+                name = player.fullName,
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier.padding(
+                    bottom = 8.dp,
+                    start = 16.dp,
+                    top = 16.dp,
+                    end = 16.dp
+                )
             )
+        }
+
+        PlayerImage(
+            player.image,
+            modifier = Modifier
+                .align(alignment = Alignment.TopEnd)
+                .padding(end = 12.dp)
+                .offset(y = (-4).dp)
         )
-        PlayerImage()
     }
 }
 
@@ -224,25 +248,34 @@ fun LeftPlayerCard(
 fun RightPlayerCard(
     player: Player
 ) {
-    Row(
-        horizontalArrangement = Arrangement.End,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp)
-            .clip(shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
-            .background(color = MaterialTheme.colors.surface)
-    ) {
-        PlayerImage()
-        PlayerName(
-            nickname = player.nickname,
-            name = player.fullName,
-            horizontalAlignment = Alignment.Start,
-            modifier = Modifier.padding(
-                bottom = 8.dp,
-                end = 16.dp,
-                top = 16.dp,
-                start = 16.dp
+    Box {
+        Row(
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+                .clip(shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
+                .background(color = MaterialTheme.colors.surface)
+        ) {
+            PlayerName(
+                nickname = player.nickname,
+                name = player.fullName,
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.padding(
+                    bottom = 8.dp,
+                    end = 16.dp,
+                    top = 16.dp,
+                    start = 16.dp
+                )
             )
+        }
+
+        PlayerImage(
+            player.image,
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .padding(start = 12.dp)
+                .offset(y = (-4).dp)
         )
     }
 }
@@ -265,7 +298,7 @@ fun PlayerName(
         )
         Text(
             text = name,
-            color = MaterialTheme.colors.secondaryTextColor,
+            color = MaterialTheme.colors.secondaryText,
             style = MaterialTheme.typography.body1
         )
     }
@@ -273,9 +306,24 @@ fun PlayerName(
 
 @Composable
 fun PlayerImage(
+    imageUrl: ImageUrl?,
     modifier: Modifier = Modifier
 ) {
-
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(imageUrl?.url)
+            .crossfade(true)
+            .build(),
+        placeholder = ColorPainter(MaterialTheme.colors.placeholder),
+        error = ColorPainter(MaterialTheme.colors.placeholder),
+        fallback = ColorPainter(MaterialTheme.colors.placeholder),
+        contentDescription = stringResource(R.string.player_image_description),
+        contentScale = ContentScale.Fit,
+        modifier = modifier
+            .size(48.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(color = MaterialTheme.colors.onSurface)
+    )
 }
 
 @Preview
@@ -315,7 +363,9 @@ fun MatchDetailsScreenPreview() {
                                     nickname = "FalleN",
                                     firstName = "Gabriel",
                                     lastName = "Toledo",
-                                    image = null
+                                    image = ImageUrl(
+                                        url = "https://cdn.pandascore.co/images/team/image/127721/7244.png"
+                                    )
                                 ),
                                 Player(
                                     id = PlayerId(1),
@@ -343,7 +393,9 @@ fun MatchDetailsScreenPreview() {
                                     nickname = "FalleN",
                                     firstName = "Gabriel",
                                     lastName = "Toledo",
-                                    image = null
+                                    image = ImageUrl(
+                                        url = "https://cdn.pandascore.co/images/team/image/127721/7244.png"
+                                    )
                                 )
                             )
                         )

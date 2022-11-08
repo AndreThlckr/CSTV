@@ -33,7 +33,7 @@ import io.github.andrethlckr.cstv.R
 import io.github.andrethlckr.cstv.core.ui.date.rememberDateToTextFormatter
 import io.github.andrethlckr.cstv.core.ui.theme.CSTVTheme
 import io.github.andrethlckr.cstv.core.ui.theme.bolder
-import io.github.andrethlckr.cstv.core.ui.theme.highlightColor
+import io.github.andrethlckr.cstv.core.ui.theme.highlight
 import io.github.andrethlckr.cstv.match.domain.League
 import io.github.andrethlckr.cstv.match.domain.LeagueId
 import io.github.andrethlckr.cstv.match.domain.Match
@@ -98,7 +98,7 @@ fun LiveIndicator(
     Box(
         modifier = modifier
             .background(
-                color = MaterialTheme.colors.highlightColor,
+                color = MaterialTheme.colors.highlight,
                 shape = MaterialTheme.shapes.small
             )
             .padding(8.dp)
