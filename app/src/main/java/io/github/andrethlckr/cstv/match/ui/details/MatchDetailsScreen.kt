@@ -147,11 +147,11 @@ private fun ColumnScope.MatchDetailsContent(
     MatchTeamsBoard(
         first = match.teams.first,
         second = match.teams.second,
-        modifier = Modifier.padding(top = 24.dp)
+        modifier = Modifier.padding(top = 12.dp)
     )
     MatchSchedule(
         date = match.scheduledAt,
-        modifier = Modifier.padding(top = 20.dp, bottom = 24.dp)
+        modifier = Modifier.padding(top = 12.dp, bottom = 24.dp)
     )
     PlayersGrid(
         firstTeamPlayers = match.teams.first?.players ?: emptyList(),

@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -31,29 +32,43 @@ fun MatchTeamsBoard(
     modifier: Modifier = Modifier
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxWidth()
     ) {
-        TeamEmblem(first)
+        TeamEmblem(
+            team = first,
+            modifier = Modifier
+                .weight(1F)
+                .padding(start = 24.dp)
+        )
 
         Text(
             text = stringResource(R.string.versus),
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.5F),
             style = MaterialTheme.typography.body1,
-            modifier = Modifier.padding(horizontal = 20.dp)
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .align(Alignment.CenterVertically)
         )
 
-        TeamEmblem(second)
+        TeamEmblem(
+            team = second,
+            modifier = Modifier
+                .weight(1F)
+                .padding(end = 24.dp)
+        )
     }
 }
 
 @Composable
 fun TeamEmblem(
-    team: Team?
+    team: Team?,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -67,13 +82,15 @@ fun TeamEmblem(
             contentScale = ContentScale.Fit,
             modifier = Modifier
                 .size(60.dp)
+                .padding(top = 10.dp)
         )
 
         Text(
             text = team?.name.orEmpty(),
             color = MaterialTheme.colors.onSurface,
+            textAlign = TextAlign.Center,
             style = MaterialTheme.typography.body2,
-            modifier = Modifier.padding(top = 10.dp)
+            modifier = Modifier.padding(vertical = 10.dp)
         )
     }
 }
